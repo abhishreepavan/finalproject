@@ -30,7 +30,7 @@ variable "ssh-location" {
 }
 
 variable "database-snapshot-identifier" {
-  default       = "arn:aws:rds:ap-south-1:236992799653:snapshot:mysql"
+  default       = "arn:aws:rds:ap-south-1:405764228532:snapshot:rds"
   description   = "database snapshot arn"
   type          = string
 }
@@ -42,7 +42,7 @@ variable "database-instance-class" {
 }
 
 variable "database-instance-identifier" {
-  default       = "database-1"
+  default       = "database"
   description   = "database instance identifier"
   type          = string
 }
