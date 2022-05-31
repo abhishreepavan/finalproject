@@ -1,9 +1,9 @@
 pipeline {
     agent any
     environment {
-        AWS_ACCOUNT_ID="236992799653"
+        AWS_ACCOUNT_ID="405764228532"
         AWS_DEFAULT_REGION="ap-south-1" 
-        IMAGE_REPO_NAME="kubernetes"
+        IMAGE_REPO_NAME="aws_ecr"
         IMAGE_TAG="latest"
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
     }
@@ -21,7 +21,7 @@ pipeline {
         
         stage('Cloning Git') {
             steps {
-                git branch: 'main', url: 'https://github.com/abhishreepavan/docker_nodejs'  
+                git branch: 'main', url: 'https://github.com/abhishreepavan/docker_nodejs'      
             }
         }
   
@@ -40,7 +40,7 @@ pipeline {
          script {
                 sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
                 sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-         }
+          }
         }
       }
     }
