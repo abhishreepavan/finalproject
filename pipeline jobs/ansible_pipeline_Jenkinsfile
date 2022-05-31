@@ -1,0 +1,40 @@
+pipeline{
+  agent any
+ tools {
+  terraform 'terraform '
+  }
+  stages{
+    stage('Git Checkout'){
+      steps{
+       git branch: 'main', url: 'https://github.com/abhishreepavan/demo-ec2'
+      }
+    } 
+    stage('terraform init'){
+      steps{
+        sh "terraform init"
+      }
+    } 
+    stage('terraform plan'){
+      steps{
+        sh "terraform plan"
+      }
+    }
+    stage('terraform apply'){
+      steps{
+        sh "terraform apply -auto-approve"
+      }
+    }
+    stage('execute ansible'){
+      steps{
+        ansiblePlaybook credentialsId: 'private-key', disableHostKeyChecking: true, installation: 'inventory', playbook: 'install-k8s.yml'
+      }
+    }
+    
+    
+    stage('terraform destroy'){
+      steps{
+        sh "terraform destroy -auto-approve"
+      }
+    }
+  }
+}

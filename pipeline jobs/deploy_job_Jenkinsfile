@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+    environment {
+        AWS_ACCOUNT_ID="236992799653"
+        AWS_DEFAULT_REGION="ap-south-1" 
+        IMAGE_REPO_NAME="kubernetes"
+        IMAGE_TAG="latest"
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+    }
+    stages {
+      
+      stage('Pulling Image from ECR') {
+         steps {
+
+           script {
+            
+             sh "docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+              }
+           }
+      }
+     stage('Cloning Git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/abhishreepavan/kubernetes'    
+            }
+        }
+
+      stage('Building image') {
+        steps{
+          script {
+           sh 'docker run -d -p 9000:3000 kubernetes'
+           }
+          
+        }
+      }
+    }
+  }
+
