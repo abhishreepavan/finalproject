@@ -17,7 +17,7 @@ pipelineJob('buidling docker image and pushing it to ECR') {
 pipelineJob('running a docker image') {
   definition {
     cps {
-      script(readFileFromWorkspace('pipeline jobs/deploy_job_jenkinsfile'))
+      script(readFileFromWorkspace('pipeline jobs/deploy_job_Jenkinsfile'))
       sandbox()     
     }
   }
