@@ -1,0 +1,34 @@
+---
+
+# A work-around for the Ansible 2.8.0 error: -
+#
+#       yum lockfile is held by another process
+#
+# This is seen during yum/package operations. An error not seen
+# in Ansible 2.7 and the problem appears to be caused by one of these
+# lingering processes...
+#
+# root      3191 33.0  0.7 331812 30828 ?        D    14:46   0:00 /usr/bin/python -tt /sbin/yum-complete-transaction -c /etc/yum.conf -y
+#
+# root      3766 88.0  4.3 387268 168832 ?       R    15:38   0:03 /usr/bin/python -tt /bin/repoquery -c /etc/yum.conf [...]
+#
+# Here we grep for processes containing 'yum'.
+# If we only get two responses then the lock is free.
+# If all's good the result of the shell-command on the host is: -
+#
+# root      5901  0.0  0.0 113176  1216 ?        S    15:16   0:00 /bin/sh -c ps -aux | grep yum
+# root      5903  0.0  0.0 112708   956 ?        S    15:16   0:00 grep yum
+#
+# So, if we don't count more than 2 lines we're "good to go".
+#
+# just 'import' this task before any yum/package operation
+# in your playbook/role...
+
+- name: Wait for yum lock release (Ansible 2.8.0 workaround)
+  shell: ps -aux | grep yum
+  register: yum_lock
+  retries: 20
+  delay: 6
+  until: yum_lock.stdout_lines|length <= 2
+  changed_when: false
+  when: ansible_version.string == '2.8.0'
