@@ -29,10 +29,5 @@ pipeline{
         ansiblePlaybook credentialsId: 'private-key', disableHostKeyChecking: true, installation: 'inventory', playbook: 'install-k8s.yml'
       }
     }
-     stage('terraform destroy'){
-      steps{
-        sh "terraform destroy -auto-approve"
-      }
-    }
   }
 }
