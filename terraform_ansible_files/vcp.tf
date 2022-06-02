@@ -55,19 +55,6 @@ resource "aws_route_table_association" "public-subnet-1-route-table-association"
   route_table_id      = aws_route_table.public-route-table.id
 }
 
-# Create Private Subnet 1
-# terraform aws create subnet
-resource "aws_subnet" "private-subnet-1" {
-  vpc_id                   = aws_vpc.vpc.id
-  cidr_block               =  "${var.private-subnet-1-cidr}"
-  availability_zone        = "ap-south-1b"
-  map_public_ip_on_launch  = false
-
-  tags      = {
-    Name    = "Private Subnet"
-  }
-}
-
 
 resource "aws_security_group" "security_group" {
   name        = "security_group"
@@ -93,9 +80,6 @@ resource "aws_security_group" "security_group" {
     Name = "security_group"
   }
 }
-
-
-
 
 
 resource "aws_instance" "ansible" {
@@ -132,84 +116,4 @@ resource "aws_instance" "ansible" {
     command = "echo ${aws_instance.ansible.public_dns} > inventory"
   }
 
- /*
-
-    provisioner "file" {
-    source      = "provisioner.sh"
-    destination = "/home/ec2-user/provisioner.sh"
-    connection {
-    host        = aws_instance.ansible.public_ip
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = file("./jenkins.pem")
-    }
-    }
-    #provisioner "remote-exec" {
-     # inline = ["bash provisioner.sh '${aws_instance.ansible.public_ip}' '${aws_instance.Node1.public_ip}'"]
-      #connection {
-      #host        = aws_instance.ansible.public_ip
-      #type        = "ssh"
-      #user        = "ec2-user"
-      #private_key = file("./ansible_terraform.pem")
-    #}
-    #}
-
-    #provisioner "file" {
-    #source      = "install-k8s.yml"
-    #destination = "/home/ec2-user/install-k8s.yml"
-    #connection {
-    #host        = aws_instance.ansible.public_ip
-    #type        = "ssh"
-    #user        = "ec2-user"
-    #private_key = file("./ansible_terraform.pem")
-    #}
-
-  #}
-    #provisioner "remote-exec" {
-   # inline = ["ansible-playbook install-k8s.yml"]
-    #}
-    #provisioner "remote-exec" {
-    #command = " ansible-playbook -i '${aws_instance.ansible.public_ip}' install-k8s.yml"
-#}  */
-}
-
-
-output "fetched_info_from_aws" {
-  value = aws_instance.ansible.public_ip
-
-}
- 
-/*
-resource "aws_instance" "Node1" {
-
-  ami                    = "ami-08f3712c8ca5af75e"
-  instance_type          = "t2.micro"
-  key_name               = "ansible_terraform"
-  monitoring             = true
-  vpc_security_group_ids = [aws_security_group.security_group.id]
-  subnet_id              = aws_subnet.public-subnet-1.id
-  tags = {
-     Name = "Node1"
-  }
-  provisioner "remote-exec" {
-    inline = [ "sudo hostnamectl set-hostname node" ]
-    connection {
-      host        = aws_instance.Node1.public_ip
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = file("./jenkins.pem")
-    }
-  }
-    provisioner "local-exec" {
-    command = "echo -e ${aws_instance.Node1.public_dns} > inventory"
-  }
-
-}
-
-
-output "fetched_info_from_aws_for_instance2" {
-  value = aws_instance.Node1.public_ip
-
-}
-*/
 
