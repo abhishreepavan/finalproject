@@ -1,8 +1,7 @@
 pipelineJob('aws') {
   definition {
     cps {
-      script(readFileFromWorkspace('pipeline jobs/ansible_pipeline_Jenkinsfile'))
-      sandbox()     
+      script(readFileFromWorkspace('pipeline jobs/ansible_pipeline_Jenkinsfile'))    
     }
   }
 }
